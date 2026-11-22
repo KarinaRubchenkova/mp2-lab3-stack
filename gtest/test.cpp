@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "../MP2_Lab3_Stack/Stack.h"
+#include <utility>
 
-TEST(StackTest, ñan_ñreate_empty_stack) {
+TEST(StackTest, can_create_empty_stack) {
     Stack<int> st;
     EXPECT_TRUE(st.IsEmpty());
 }
 TEST(StackTest, can_create_stack_with_given_size) {
-    Stack<int> st(12);
-    ASSERT_NO_THROW(st);
+    ASSERT_NO_THROW(Stack<int> st(12));
 }
 TEST(StackTest, cannot_create_stack_with_zero_size) {
     ASSERT_ANY_THROW(Stack<int> st(0););
@@ -19,18 +19,53 @@ TEST(StackTest, cant_create_too_large_stack)
 {
     ASSERT_ANY_THROW(Stack<int> m(MAX_STACK_SIZE + 1));
 }
+TEST(StackTest, can_move_stack) {
+    Stack<int> st(3);
+    st.Push(1);
+    st.Push(2);
+    st.Push(3);
+    Stack<int> st_2(std::move(st));
+    EXPECT_EQ(3, st_2.Top());
+}
+TEST(StackTest, moved_stack_is_empty) {
+    Stack<int> st(3);
+    st.Push(1);
+    st.Push(2);
+    Stack<int> st_2(std::move(st));
+    EXPECT_TRUE(st.IsEmpty());
+}
 TEST(StackTest, can_copy_stack) {
     Stack<int> st(3);
     st.Push(1);
     st.Push(2);
     st.Push(3);
-    Stack<int> st_2(st);
-    ASSERT_NO_THROW(st_2);
+    ASSERT_NO_THROW(Stack<int> st_2(st));
 }
 TEST(StackTest, copied_stack_is_equal_to_original) {
     Stack<int> st(3);
+    st.Push(1);
+    st.Push(1);
+    st.Push(1);
     Stack<int> st_2(st);
     EXPECT_TRUE(st  == st_2);
+}
+TEST(StackTest, can_move_assign_stack) {
+    Stack<int> st(3);
+    Stack<int> st_2(2);
+    st.Push(1);
+    st.Push(2);
+    st.Push(3);
+    ASSERT_NO_THROW(st_2 = std::move(st));
+    EXPECT_EQ(3, st_2.Top());
+}
+TEST(StackTest, move_assignment_leaves_source_empty) {
+    Stack<int> st(3);
+    Stack<int> st_2(2);
+    st.Push(1);
+    st.Push(2);
+    st.Push(3);
+    st_2 = std::move(st);
+    EXPECT_TRUE(st.IsEmpty());
 }
 TEST(StackTest, can_push_element) {
     Stack<int> st(3);
@@ -124,12 +159,32 @@ TEST(StackTest, can_copy_assign_stack) {
     st.Push(1);
     st.Push(2);
     st.Push(3);
-    st_2 = st;
     ASSERT_NO_THROW(st_2 = st);
     EXPECT_EQ(st, st_2);
 }
 TEST(StackTest, copy_assignment_preserves_elements) {
-
+    Stack<int> st(3);
+    Stack<int> st_2(2);
+    st.Push(1);
+    st.Push(2);
+    st.Push(3);
+    st_2 = st;
+    EXPECT_EQ(3, st_2.Pop());
+    EXPECT_EQ(2, st_2.Pop());
+    EXPECT_EQ(1, st_2.Pop());
+    EXPECT_TRUE(st_2.IsEmpty());
+}
+TEST(StackTest, move_assignment_preserves_elements) {
+    Stack<int> st(3);
+    Stack<int> st_2(2);
+    st.Push(1);
+    st.Push(2);
+    st.Push(3);
+    st_2 = std::move(st);
+    EXPECT_EQ(3, st_2.Pop());
+    EXPECT_EQ(2, st_2.Pop());
+    EXPECT_EQ(1, st_2.Pop());
+    EXPECT_TRUE(st_2.IsEmpty());
 }
 TEST(StackTest, can_assign_stack_to_itself) {
     Stack<int> st(3);
