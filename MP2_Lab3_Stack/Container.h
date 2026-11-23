@@ -99,6 +99,9 @@ public:
 	int get_count() const noexcept {
 		return static_cast<int>(count);
 	}
+	int get_size(){
+		return size;
+	}
 	bool operator==(const Container& c) const {
 		if (count != c.count) {
 			return false;

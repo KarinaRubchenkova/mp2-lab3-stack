@@ -82,6 +82,4 @@ public:
 		if (IsEmpty()) { throw "Error"; }
 		return pMem[top_i];
 	}
-
-
 };
